@@ -56,15 +56,13 @@ function Model3dPresent() {
     y: 0,
   })
 
-  const wow = () => {
+  useAnimationFrame(() => {
     mouse.current.rotation.y = MathUtils.lerp(
       mouse.current.rotation.y,
       deg2rad(mouseOffset.x * 0.25),
       0.1,
     )
-  }
-
-  useAnimationFrame(wow)
+  })
 
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {
@@ -146,20 +144,20 @@ function Model3dPresent() {
     })
 
     mixer.stopAllAction()
-  }, [actions, names])
+  }, [actions, names, mixer])
 
   return (
-    <group ref={group}>
+    <group
+      ref={group}
+      onClick={() => {
+        console.log('WOW')
+        actions[names[0]]?.reset().play()
+        actions[names[0]]!.repetitions = 0
+        actions[names[0]]!.clampWhenFinished = true
+      }}
+    >
       <group ref={mouse}>
-        <group
-          ref={inner}
-          onClick={() => {
-            console.log('WOW')
-            actions[names[0]]?.reset().play()
-            actions[names[0]]!.repetitions = 0
-            actions[names[0]]!.clampWhenFinished = true
-          }}
-        >
+        <group ref={inner}>
           <primitive group={ref} object={scene} dispose={null} />
         </group>
       </group>
