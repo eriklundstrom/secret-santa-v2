@@ -1,44 +1,10 @@
 import { useAnimations, useGLTF } from '@react-three/drei'
 import gsap from 'gsap'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Group, MathUtils, MeshPhysicalMaterial } from 'three'
+import { deg2rad } from '../../../utils/deg2rad.ts'
+import { useAnimationFrame } from '../../../utils/use-animation-frame.ts'
 import modalUrl from './Present.glb'
-
-function deg2rad(deg: number): number {
-  return (deg * Math.PI) / 180
-}
-
-const useAnimationFrame = (
-  cb: (info: { time: number; delta: number }) => void,
-) => {
-  const cbRef = useRef<(info: { time: number; delta: number }) => void>()
-  const frame = useRef<number>()
-  const init = useRef(performance.now())
-  const last = useRef(performance.now())
-
-  cbRef.current = cb
-
-  const animate = (now: number) => {
-    if (cbRef.current) {
-      cbRef.current({
-        time: (now - init.current) / 1000,
-        delta: (now - last.current) / 1000,
-      })
-    }
-    last.current = now
-    frame.current = requestAnimationFrame(animate)
-  }
-
-  useLayoutEffect(() => {
-    frame.current = requestAnimationFrame(animate)
-
-    return () => {
-      if (frame.current) {
-        cancelAnimationFrame(frame.current)
-      }
-    }
-  }, [])
-}
 
 function Model3dPresent() {
   const group = useRef<Group>(null!)
@@ -154,6 +120,12 @@ function Model3dPresent() {
         actions[names[0]]?.reset().play()
         actions[names[0]]!.repetitions = 0
         actions[names[0]]!.clampWhenFinished = true
+      }}
+      onPointerEnter={() => {
+        group.current.scale.set(1.1, 1.1, 1.1)
+      }}
+      onPointerLeave={() => {
+        group.current.scale.set(1, 1, 1)
       }}
     >
       <group ref={mouse}>
