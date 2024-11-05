@@ -1,8 +1,8 @@
+import Effects from '@components/3d/effects/Effects.tsx'
+import Model3dPresent from '@components/3d/present/Present.tsx'
 import { Environment, OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import styles from './App.module.css'
-import Effects from './components/3d/effects/Effects.tsx'
-import Model3dPresent from './components/3d/present/Present.tsx'
 
 function App() {
   return (
