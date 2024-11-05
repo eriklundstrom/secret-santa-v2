@@ -1,18 +1,87 @@
 import { useAnimations, useGLTF } from '@react-three/drei'
 import gsap from 'gsap'
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Group, MathUtils, MeshPhysicalMaterial } from 'three'
 import modalUrl from './Present.glb'
 
 function deg2rad(deg: number): number {
   return (deg * Math.PI) / 180
 }
 
+const useAnimationFrame = (
+  cb: (info: { time: number; delta: number }) => void,
+) => {
+  const cbRef = useRef<(info: { time: number; delta: number }) => void>()
+  const frame = useRef<number>()
+  const init = useRef(performance.now())
+  const last = useRef(performance.now())
+
+  cbRef.current = cb
+
+  const animate = (now: number) => {
+    if (cbRef.current) {
+      cbRef.current({
+        time: (now - init.current) / 1000,
+        delta: (now - last.current) / 1000,
+      })
+    }
+    last.current = now
+    frame.current = requestAnimationFrame(animate)
+  }
+
+  useLayoutEffect(() => {
+    frame.current = requestAnimationFrame(animate)
+
+    return () => {
+      if (frame.current) {
+        cancelAnimationFrame(frame.current)
+      }
+    }
+  }, [])
+}
+
 function Model3dPresent() {
-  const group = useRef()
-  const inner = useRef()
+  const group = useRef<Group>(null!)
+  const inner = useRef<Group>(null!)
+  const mouse = useRef<Group>(null!)
+
   const { scene, animations, materials } = useGLTF(modalUrl)
   const { ref, actions, names, mixer } = useAnimations(animations, group)
-  materials.Texture.roughness = 0.5
+  const material: MeshPhysicalMaterial =
+    materials.Texture as MeshPhysicalMaterial
+  material.roughness = 0.5
+
+  const [mouseOffset, setMouseOffset] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  })
+
+  const wow = () => {
+    mouse.current.rotation.y = MathUtils.lerp(
+      mouse.current.rotation.y,
+      deg2rad(mouseOffset.x * 0.25),
+      0.1,
+    )
+  }
+
+  useAnimationFrame(wow)
+
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      const x = e.offsetX - window.innerWidth / 2
+      const y = e.offsetY - window.innerHeight / 2
+      const pX = (x / window.innerWidth) * 100
+      const pY = (y / window.innerHeight) * 100
+
+      setMouseOffset(() => ({ x: pX, y: pY }))
+    }
+
+    window.addEventListener('mousemove', handleMove)
+
+    return () => {
+      window.removeEventListener('mousemove', handleMove)
+    }
+  }, [mouseOffset])
 
   useEffect(() => {
     const translate = {
@@ -77,15 +146,22 @@ function Model3dPresent() {
     })
 
     mixer.stopAllAction()
-    //
-    // actions[names[0]]?.reset().play()
-    //actions[names[0]]?.reset().play()
   }, [actions, names])
 
   return (
     <group ref={group}>
-      <group ref={inner}>
-        <primitive group={ref} object={scene} dispose={null} />
+      <group ref={mouse}>
+        <group
+          ref={inner}
+          onClick={() => {
+            console.log('WOW')
+            actions[names[0]]?.reset().play()
+            actions[names[0]]!.repetitions = 0
+            actions[names[0]]!.clampWhenFinished = true
+          }}
+        >
+          <primitive group={ref} object={scene} dispose={null} />
+        </group>
       </group>
     </group>
   )

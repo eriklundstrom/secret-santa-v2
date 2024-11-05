@@ -1,4 +1,4 @@
-import { OrbitControls } from '@react-three/drei'
+import { Environment, OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import styles from './App.module.css'
 import Effects from './components/3d/effects/Effects.tsx'
@@ -20,10 +20,13 @@ function App() {
         }}
       >
         <OrbitControls />
-        <ambientLight intensity={Math.PI / 2} />
-        <pointLight position={[2, 10, 2]} decay={0} intensity={Math.PI} />
         <Model3dPresent />
         <Effects />
+        <Environment
+          preset="studio"
+          environmentRotation={[0, (70 * Math.PI) / 180, 0]}
+          environmentIntensity={0.3}
+        />
       </Canvas>
     </>
   )
