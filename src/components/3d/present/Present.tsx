@@ -1,18 +1,19 @@
 import { useGSAP } from '@gsap/react'
 import { useAnimations, useGLTF } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
 import { deg2rad } from '@utils/deg2rad.ts'
-import { useAnimationFrame } from '@utils/use-animation-frame.ts'
 import gsap from 'gsap'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Group, MathUtils, MeshPhysicalMaterial } from 'three'
-import modalUrl from './Present.glb'
+import modalUrl from './paket.glb'
 
 function Model3dPresent() {
-  const group = useRef<Group>(null!)
+  const wrapper = useRef<Group>(null!)
   const inner = useRef<Group>(null!)
-  const mouse = useRef<Group>(null!)
+  const mouseMovementTarget = useRef<Group>(null!)
   const { scene, animations, materials } = useGLTF(modalUrl)
-  const { ref, actions, names, mixer } = useAnimations(animations, group)
+  const { ref, actions, names, mixer } = useAnimations(animations, wrapper)
+  const [scale, setScale] = useState<number>(1)
   const [mouseOffset, setMouseOffset] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
@@ -27,18 +28,48 @@ function Model3dPresent() {
     setMouseOffset(() => ({ x: pX, y: pY }))
   }, [])
 
-  useAnimationFrame(() => {
-    mouse.current.rotation.y = MathUtils.lerp(
-      mouse.current.rotation.y,
+  useFrame(() => {
+    mouseMovementTarget.current.rotation.y = MathUtils.lerp(
+      mouseMovementTarget.current.rotation.y,
       deg2rad(mouseOffset.x * 0.25),
       0.1,
     )
+
+    const scaleVal = MathUtils.lerp(
+      mouseMovementTarget.current.scale.x,
+      scale,
+      0.1,
+    )
+    mouseMovementTarget.current.scale.set(scaleVal, scaleVal, scaleVal)
   })
 
+  /*
+  useAnimationFrame(() => {
+    mouseMovementTarget.current.rotation.y = MathUtils.lerp(
+      mouseMovementTarget.current.rotation.y,
+      deg2rad(mouseOffset.x * 0.25),
+      0.1,
+    )
+
+    const scaleVal = MathUtils.lerp(
+      mouseMovementTarget.current.scale.x,
+      scale,
+      0.1,
+    )
+    mouseMovementTarget.current.scale.set(scaleVal, scaleVal, scaleVal)
+  })
+   */
+
   useEffect(() => {
+    const ribbonMaterial = materials.Ribbon as MeshPhysicalMaterial
+    ribbonMaterial.roughness = 0.4
+
+    const boxMaterial = materials.Box as MeshPhysicalMaterial
+    boxMaterial.roughness = 0.6
+
     window.addEventListener('mousemove', handleMove)
     return () => window.removeEventListener('mousemove', handleMove)
-  }, [handleMove])
+  }, [handleMove, materials])
 
   // Animate in
   useGSAP(
@@ -95,8 +126,8 @@ function Model3dPresent() {
         rotationY: 0,
         ease: 'elastic.out(1.0, 0.6)',
         onUpdate: () => {
-          group.current.position.set(translate.x, translate.y, translate.z)
-          group.current.rotation.set(
+          wrapper.current.position.set(translate.x, translate.y, translate.z)
+          wrapper.current.rotation.set(
             translate.rotationX,
             translate.rotationY,
             translate.rotationZ,
@@ -104,29 +135,29 @@ function Model3dPresent() {
         },
       })
     },
-    { scope: group },
+    { scope: wrapper },
   )
-
-  const material = materials.Texture as MeshPhysicalMaterial
-  material.roughness = 0.5
 
   return (
     <group
-      ref={group}
+      ref={wrapper}
       onClick={() => {
-        console.log('WOW')
         actions[names[0]]?.reset().play()
         actions[names[0]]!.repetitions = 0
         actions[names[0]]!.clampWhenFinished = true
       }}
-      onPointerEnter={() => {
-        group.current.scale.set(1.1, 1.1, 1.1)
-      }}
-      onPointerLeave={() => {
-        group.current.scale.set(1, 1, 1)
-      }}
     >
-      <group ref={mouse}>
+      <group
+        ref={mouseMovementTarget}
+        onPointerEnter={() => {
+          setScale(1.1)
+          document.body.classList.add('hovered')
+        }}
+        onPointerLeave={() => {
+          setScale(1)
+          document.body.classList.remove('hovered')
+        }}
+      >
         <group ref={inner}>
           <primitive group={ref} object={scene} dispose={null} />
         </group>

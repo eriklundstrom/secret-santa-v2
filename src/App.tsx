@@ -1,8 +1,9 @@
+import Model3dBalls from '@components/3d/balls/Balls.tsx'
 import Effects from '@components/3d/effects/Effects.tsx'
-import Model3dPresent from '@components/3d/present/Present.tsx'
 import { Environment, OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import styles from './App.module.css'
+import Model3dPresent from './components/3d/present/Present.tsx'
 
 function App() {
   return (
@@ -11,16 +12,17 @@ function App() {
         className={styles.canvas}
         flat
         dpr={[1, 1.5]}
-        gl={{ antialias: false }}
+        gl={{ antialias: true }}
         camera={{
           position: [3, 1, 2],
-          fov: 25,
+          fov: 25, // 40
           near: 1,
           far: 20,
         }}
       >
         <OrbitControls />
         <Model3dPresent />
+        <Model3dBalls />
         <Effects />
         <Environment
           preset="studio"
