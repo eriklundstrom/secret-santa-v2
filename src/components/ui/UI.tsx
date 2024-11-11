@@ -58,67 +58,28 @@ function UI({ onNameSelect }: Props) {
   )
 
   const onBack = () => {
-    gsap.to(content.current, {
-      duration: 0.4,
-      opacity: 0,
-      translateY: '20px',
-      ease: 'power1.inOut',
-      onComplete: () => {
-        setIsHidden(false)
-        setHasError(false)
-        setIsSanta(false)
-        setIsLoading(false)
-        setHasSelected(false)
-        setSelectedName('')
-
-        gsap.to(content.current, {
-          duration: 0.4,
-          opacity: 1,
-          translateY: '0px',
-          ease: 'power1.inOut',
-        })
-      },
+    animateContent(() => {
+      setIsHidden(false)
+      setHasError(false)
+      setIsSanta(false)
+      setIsLoading(false)
+      setHasSelected(false)
+      setSelectedName('')
     })
   }
 
   const onNameClick = (name: string) => {
     if (hasSelected) return
-    gsap.to(content.current, {
-      duration: 0.4,
-      opacity: 0,
-      translateY: '20px',
-      ease: 'power1.inOut',
-      onComplete: () => {
-        setSelectedName(name)
-        setHasSelected(true)
-
-        gsap.to(content.current, {
-          duration: 0.4,
-          opacity: 1,
-          translateY: '0px',
-          ease: 'power1.inOut',
-        })
-      },
+    animateContent(() => {
+      setSelectedName(name)
+      setHasSelected(true)
     })
   }
 
   const onNameCancel = () => {
     if (!hasSelected || isLoading) return
-    gsap.to(content.current, {
-      duration: 0.4,
-      opacity: 0,
-      translateY: '20px',
-      ease: 'power1.inOut',
-      onComplete: () => {
-        setHasSelected(false)
-
-        gsap.to(content.current, {
-          duration: 0.4,
-          opacity: 1,
-          translateY: '0px',
-          ease: 'power1.inOut',
-        })
-      },
+    animateContent(() => {
+      setHasSelected(false)
     })
   }
 
@@ -130,40 +91,14 @@ function UI({ onNameSelect }: Props) {
       randomPerson !== 'error' ? (randomPerson as NamesLiteral) : undefined
 
     if (randomPerson === 'error') {
-      gsap.to(content.current, {
-        duration: 0.4,
-        opacity: 0,
-        translateY: '20px',
-        ease: 'power1.inOut',
-        onComplete: () => {
-          setHasError(true)
-          setIsLoading(false)
-
-          gsap.to(content.current, {
-            duration: 0.4,
-            opacity: 1,
-            translateY: '0px',
-            ease: 'power1.inOut',
-          })
-        },
+      animateContent(() => {
+        setHasError(true)
+        setIsLoading(false)
       })
     } else if (randomPerson === 'isSanta') {
-      gsap.to(content.current, {
-        duration: 0.4,
-        opacity: 0,
-        translateY: '20px',
-        ease: 'power1.inOut',
-        onComplete: () => {
-          setIsSanta(true)
-          setIsLoading(false)
-
-          gsap.to(content.current, {
-            duration: 0.4,
-            opacity: 1,
-            translateY: '0px',
-            ease: 'power1.inOut',
-          })
-        },
+      animateContent(() => {
+        setIsSanta(true)
+        setIsLoading(false)
       })
     } else {
       gsap.to(ref.current, {
