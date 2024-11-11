@@ -22,8 +22,8 @@ function Scene3d({ randomName }: Props) {
   const handleMove = useCallback((e: MouseEvent) => {
     const x = e.offsetX - window.innerWidth / 2
     const y = e.offsetY - window.innerHeight / 2
-    const pX = (x / window.innerWidth) * 100
-    const pY = (y / window.innerHeight) * 100
+    const pX = x / window.innerWidth
+    const pY = y / window.innerHeight
 
     setMouseOffset(() => ({ x: pX, y: pY }))
   }, [])
