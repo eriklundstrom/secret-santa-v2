@@ -3,7 +3,7 @@ import { useGSAP } from '@gsap/react'
 import { useAnimations, useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { deg2rad } from '@utils/deg2rad.ts'
-import { Names, NamesLiteral } from '@utils/names.ts'
+import { NamesLiteral } from '@utils/names.ts'
 import gsap from 'gsap'
 import { forwardRef, useEffect, useRef, useState } from 'react'
 import { Group, MathUtils, MeshPhysicalMaterial } from 'three'
@@ -11,10 +11,11 @@ import modalUrl from './paket.glb'
 
 type Props = {
   show: boolean
+  randomName?: NamesLiteral
 }
 
 const Model3dPresent = forwardRef<Group, Props>(function Model3dPresent(
-  { show },
+  { show, randomName },
   ref,
 ) {
   const wrapper = useRef<Group>(null!)
@@ -30,7 +31,13 @@ const Model3dPresent = forwardRef<Group, Props>(function Model3dPresent(
   } = useAnimations(animations, wrapper)
   const [scale, setScale] = useState(1)
   const [animationStarted, setAnimationStarted] = useState(false)
-  const [selectedName, setSelectedName] = useState<NamesLiteral>('Erik')
+  const [selectedName, setSelectedName] = useState<NamesLiteral | undefined>(
+    'Erik',
+  )
+
+  useEffect(() => {
+    setSelectedName(randomName)
+  }, [randomName])
 
   useFrame(() => {
     const scaleVal = MathUtils.lerp(inner.current.scale.x, scale, 0.1)
@@ -135,9 +142,6 @@ const Model3dPresent = forwardRef<Group, Props>(function Model3dPresent(
     setScale(1)
     setAnimationStarted(() => true)
     document.body.classList.remove('hovered')
-
-    // Get random name
-    setSelectedName(Names[(Names.length * Math.random()) | 0] as NamesLiteral)
 
     const target = { x: deg2rad(5), scale: 1 }
     gsap.to(target, {

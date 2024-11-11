@@ -3,13 +3,16 @@ import Scene3d from '@components/3d/scene/Scene3d.tsx'
 import UI from '@components/ui/UI.tsx'
 import { Environment } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
+import { NamesLiteral } from '@utils/names.ts'
 import { useState } from 'react'
 import styles from './App.module.css'
 
 function App() {
-  const [hasSelectedName, setHasSelectedName] = useState(false)
-  const onNameSelect = () => {
-    setHasSelectedName(true)
+  const [randomName, setRandomName] = useState<NamesLiteral | undefined>(
+    undefined,
+  )
+  const onNameSelect = (name?: NamesLiteral) => {
+    setRandomName(name)
   }
 
   return (
@@ -26,7 +29,7 @@ function App() {
           far: 20,
         }}
       >
-        <Scene3d hasSelectedName={hasSelectedName} />
+        <Scene3d randomName={randomName} />
         <Effects />
         <Environment
           preset="studio"

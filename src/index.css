@@ -8,6 +8,7 @@
   background-color: #111;
 
   background: radial-gradient(ellipse at 50% 30%, #BF424A 1%, #7B151C 70%);
+  background: radial-gradient(ellipse at 50% 30%, #a5373c 1%, #651117 70%);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -17,6 +18,8 @@
 
 *, *:before, *:after {
   box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 html, body {

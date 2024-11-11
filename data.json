@@ -1,0 +1,12 @@
+{
+  "people": [
+    { "index": 0, "name": "Lena", "selected": false, "santa": "", "prevSanta": "Lasse" },
+    { "index": 1, "name": "Robin", "selected": false, "santa": "", "prevSanta": "Micke" },
+    { "index": 2, "name": "Micke", "selected": false, "santa": "", "prevSanta": "Erik" },
+    { "index": 3, "name": "Manisa", "selected": false, "santa": "", "prevSanta": "Thawa" },
+    { "index": 4, "name": "Inger", "selected": false, "santa": "", "prevSanta": "Manisa" },
+    { "index": 5, "name": "Lasse", "selected": false, "santa": "", "prevSanta": "Robin" },
+    { "index": 6, "name": "Thawa", "selected": false, "santa": "", "prevSanta": "Inger" },
+    { "index": 7, "name": "Erik", "selected": false, "santa": "", "prevSanta": "Lena" }
+  ]
+}

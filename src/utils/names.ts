@@ -6,6 +6,7 @@ export const Names = [
   'Manisa',
   'Lena',
   'Robin',
+  'Thawa',
 ] as const
 
 export type NamesLiteral = (typeof Names)[number]

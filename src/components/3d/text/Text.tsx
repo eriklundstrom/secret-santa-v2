@@ -8,7 +8,7 @@ import { Group, MeshPhysicalMaterial } from 'three'
 import modalUrl from './text.glb'
 
 type Props = {
-  name: NamesLiteral
+  name?: NamesLiteral
   show: boolean
 }
 
@@ -26,8 +26,9 @@ const Model3dText = forwardRef<Group, Props>(function Model3dText(
   }, [materials])
 
   useEffect(() => {
+    if (!name) return
     target.current.scale.set(0, 0, 0)
-  }, [])
+  }, [name])
 
   const { contextSafe } = useGSAP({ scope: target })
   const showText = contextSafe(() => {
@@ -74,12 +75,12 @@ const Model3dText = forwardRef<Group, Props>(function Model3dText(
     }
   }, [show, showText, hasAnimated])
 
-  useEffect(() => {
-    console.log(name)
-  }, [name])
+  if (!name) {
+    return null
+  }
 
   return (
-    <group ref={ref}>
+    <group ref={ref} visible={!!name}>
       <primitive ref={target} object={nodes[`${name}-text`]} dispose={null} />
     </group>
   )
