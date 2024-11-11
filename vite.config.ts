@@ -7,7 +7,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   plugins: [react(), tsconfigPaths(), mkcert()],
   assetsInclude: ['**/*.glb'],
-  base: '/secret-santa-v2/',
+  base: '/',
   css: {
     modules: {
       localsConvention: 'camelCase',
