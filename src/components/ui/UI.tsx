@@ -154,7 +154,7 @@ function UI({ onNameSelect }: Props) {
               onClick={() => onNameConfirm(selectedName)}
             >
               <div className={styles.buttonInner}></div>
-              <div className={styles.name}>Det är jag!</div>
+              <div className={styles.name}>Då kör vi!</div>
             </div>
             <div
               className={clsx(styles.button, { [styles.locked]: isLoading })}
