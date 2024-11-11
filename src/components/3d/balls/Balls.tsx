@@ -5,7 +5,14 @@ import { forwardRef, useEffect, useRef } from 'react'
 import { Group, MeshPhysicalMaterial } from 'three'
 import modalUrl from './balls.glb'
 
-const Model3dBalls = forwardRef<Group>(function Model3dBalls(_, ref) {
+type Props = {
+  show: boolean
+}
+
+const Model3dBalls = forwardRef<Group, Props>(function Model3dBalls(
+  { show },
+  ref,
+) {
   const { materials, nodes } = useGLTF(modalUrl)
   const ball1 = useRef<Group>(null!)
   const ball2 = useRef<Group>(null!)
@@ -19,12 +26,13 @@ const Model3dBalls = forwardRef<Group>(function Model3dBalls(_, ref) {
 
   useGSAP(
     () => {
+      if (!show) return
       const startY = 2
       const translate = { y: startY }
       const b1p = ball1.current.position
       const b2p = ball2.current.position
       const b3p = ball3.current.position
-      const delay = 0.6
+      const delay = 0
       const duration = 0.8
 
       // Animate in
@@ -34,7 +42,7 @@ const Model3dBalls = forwardRef<Group>(function Model3dBalls(_, ref) {
         {
           duration,
           delay: delay + 0.1,
-          y: b1p.y,
+          y: b1p.y + 0.1,
           ease: 'elastic.out(1.0, 0.9)',
           onUpdate: () => {
             ball1.current.position.set(b1p.x, translate.y, b1p.z)
@@ -48,7 +56,7 @@ const Model3dBalls = forwardRef<Group>(function Model3dBalls(_, ref) {
         {
           duration,
           delay: delay + 0.2,
-          y: b2p.y,
+          y: b2p.y + 0.1,
           ease: 'elastic.out(1.0, 0.8)',
           onUpdate: () => {
             ball2.current.position.set(b2p.x, translate.y, b2p.z)
@@ -62,7 +70,7 @@ const Model3dBalls = forwardRef<Group>(function Model3dBalls(_, ref) {
         {
           duration,
           delay: delay + 0.4,
-          y: b3p.y,
+          y: b3p.y + 0.1,
           ease: 'elastic.out(1.0, 0.8)',
           onUpdate: () => {
             ball3.current.position.set(b3p.x, translate.y, b3p.z)
@@ -70,11 +78,11 @@ const Model3dBalls = forwardRef<Group>(function Model3dBalls(_, ref) {
         },
       )
     },
-    { scope: group },
+    { scope: group, dependencies: [show] },
   )
 
   return (
-    <group ref={ref}>
+    <group ref={ref} visible={show}>
       <group ref={group} parent={nodes.scene}>
         <primitive ref={ball1} object={nodes.Ball1} dispose={null} />
         <primitive ref={ball2} object={nodes.Ball2} dispose={null} />

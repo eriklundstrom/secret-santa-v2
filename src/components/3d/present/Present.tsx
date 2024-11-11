@@ -50,6 +50,7 @@ const Model3dPresent = forwardRef<Group, Props>(function Model3dPresent(
     () => {
       if (!show) return
       mixer.stopAllAction()
+      const delay = 1
 
       const translate = {
         x: 0,
@@ -65,6 +66,7 @@ const Model3dPresent = forwardRef<Group, Props>(function Model3dPresent(
       // Loop - Animate up and down
       gsap.to(positionOffset, {
         duration: 4.0,
+        delay,
         y: -0.05,
         repeat: -1,
         yoyo: true,
@@ -78,6 +80,7 @@ const Model3dPresent = forwardRef<Group, Props>(function Model3dPresent(
       // Loop - Animate rotation
       gsap.to(rotationOffset, {
         duration: 6.0,
+        delay,
         x: `random(${deg2rad(5)}, ${deg2rad(-5)})`,
         y: `random(${deg2rad(5)}, ${deg2rad(-5)})`,
         z: `random(${deg2rad(5)}, ${deg2rad(-5)})`,
@@ -95,20 +98,32 @@ const Model3dPresent = forwardRef<Group, Props>(function Model3dPresent(
       })
 
       // Animate in
-      gsap.to(translate, {
-        duration: 2,
-        y: 0,
-        rotationY: 0,
-        ease: 'elastic.out(1.0, 0.6)',
-        onUpdate: () => {
-          wrapper.current.position.set(translate.x, translate.y, translate.z)
-          wrapper.current.rotation.set(
-            translate.rotationX,
-            translate.rotationY,
-            translate.rotationZ,
-          )
+      gsap.fromTo(
+        translate,
+        {
+          x: 0,
+          y: -3,
+          z: 0,
+          rotationX: 0,
+          rotationY: deg2rad(360),
+          rotationZ: 0,
         },
-      })
+        {
+          duration: 2,
+          delay,
+          y: -0.2,
+          rotationY: 0,
+          ease: 'elastic.out(1.0, 0.6)',
+          onUpdate: () => {
+            wrapper.current.position.set(translate.x, translate.y, translate.z)
+            wrapper.current.rotation.set(
+              translate.rotationX,
+              translate.rotationY,
+              translate.rotationZ,
+            )
+          },
+        },
+      )
     },
     { scope: wrapper, dependencies: [show] },
   )

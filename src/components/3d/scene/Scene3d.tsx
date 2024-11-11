@@ -48,7 +48,7 @@ function Scene3d({ hasSelectedName }: Props) {
 
     balls.current.rotation.y = MathUtils.lerp(
       balls.current.rotation.y,
-      deg2rad(mouseOffset.x * 0.05),
+      deg2rad(mouseOffset.x * 0.01),
       0.1,
     )
   })
@@ -67,7 +67,7 @@ function Scene3d({ hasSelectedName }: Props) {
 
   return (
     <group ref={mouseMovementTarget}>
-      <Model3dBalls ref={balls} />
+      <Model3dBalls ref={balls} show={hasSelectedName} />
       <Model3dPresent ref={present} show={hasSelectedName} />
     </group>
   )

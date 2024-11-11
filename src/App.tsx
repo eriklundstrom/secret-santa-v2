@@ -13,7 +13,7 @@ function App() {
   }
 
   return (
-    <>
+    <div className={styles.app}>
       <Canvas
         className={styles.canvas}
         flat
@@ -35,7 +35,7 @@ function App() {
         />
       </Canvas>
       <UI onNameSelect={onNameSelect} />
-    </>
+    </div>
   )
 }
 

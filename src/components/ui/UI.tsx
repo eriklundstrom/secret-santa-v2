@@ -19,6 +19,7 @@ function UI({ onNameSelect }: Props) {
         duration: 1.0,
         delay: 0.5,
         opacity: 1,
+        ease: 'power1.inOut',
       })
     },
     { scope: ref },
@@ -26,8 +27,9 @@ function UI({ onNameSelect }: Props) {
 
   const onNameClick = contextSafe(() => {
     gsap.to(ref.current, {
-      duration: 0.5,
+      duration: 1.0,
       opacity: 0,
+      ease: 'power1.inOut',
       onComplete: () => {
         setIsHidden(true)
         onNameSelect()
