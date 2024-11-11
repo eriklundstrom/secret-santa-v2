@@ -101,13 +101,21 @@ function UI({ onNameSelect }: Props) {
         setIsLoading(false)
       })
     } else {
-      gsap.to(ref.current, {
-        duration: 1.0,
+      gsap.to(content.current, {
+        duration: 0.4,
         opacity: 0,
+        translateY: '20px',
         ease: 'power1.inOut',
         onComplete: () => {
-          setIsHidden(true)
-          onNameSelect(randomName)
+          gsap.to(ref.current, {
+            duration: 1.0,
+            opacity: 0,
+            ease: 'power1.inOut',
+            onComplete: () => {
+              setIsHidden(true)
+              onNameSelect(randomName)
+            },
+          })
         },
       })
     }
