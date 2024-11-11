@@ -80,6 +80,10 @@
   margin-top: 15px;
   margin-bottom: 20px;
   letter-spacing: 1px;
+
+  &.small {
+    margin-bottom: 10px;
+  }
 }
 
 .button {
@@ -162,4 +166,10 @@
 .text {
   text-align: center;
   font-family: Avenir, sans-serif;
+  padding: 0;
+  margin: 0;
+
+  &.last {
+    margin-bottom: 30px;
+  }
 }

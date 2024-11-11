@@ -21,6 +21,25 @@ function UI({ onNameSelect }: Props) {
   const [hasSelected, setHasSelected] = useState(false)
   const [selectedName, setSelectedName] = useState<string>('')
 
+  const animateContent = contextSafe((callback: () => void) => {
+    gsap.to(content.current, {
+      duration: 0.4,
+      opacity: 0,
+      translateY: '20px',
+      ease: 'power1.inOut',
+      onComplete: () => {
+        callback()
+
+        gsap.to(content.current, {
+          duration: 0.4,
+          opacity: 1,
+          translateY: '0px',
+          ease: 'power1.inOut',
+        })
+      },
+    })
+  })
+
   useGSAP(
     () => {
       gsap.fromTo(
@@ -208,8 +227,11 @@ function UI({ onNameSelect }: Props) {
         {hasError && (
           <div className={styles.inner}>
             <div className={clsx(styles.line, styles.top)}></div>
-            <h1 className={styles.title}>Något underligt hände!</h1>
-            <p className={styles.text}>Kontakta Erik för mer info.</p>
+            <h1 className={clsx(styles.title, styles.small)}>Oj...</h1>
+            <p className={styles.text}>Något underligt hände!</p>
+            <p className={clsx(styles.text, styles.last)}>
+              Kontakta Erik för mer info.
+            </p>
             <div className={styles.button} onClick={() => onBack()}>
               <div className={styles.buttonInner}></div>
               <div className={styles.name}>Tillbaka</div>
@@ -221,11 +243,13 @@ function UI({ onNameSelect }: Props) {
         {isSanta && (
           <div className={styles.inner}>
             <div className={clsx(styles.line, styles.top)}></div>
-            <h1 className={styles.title}>Oj...</h1>
+            <h1 className={clsx(styles.title, styles.small)}>Oj...</h1>
             <p className={styles.text}>
               Det var visst någon som hade önskat en julklapp av dig redan!
             </p>
-            <p className={styles.text}>Kontakta Erik för mer info.</p>
+            <p className={clsx(styles.text, styles.last)}>
+              Kontakta Erik för mer info.
+            </p>
             <div className={styles.button} onClick={() => onBack()}>
               <div className={styles.buttonInner}></div>
               <div className={styles.name}>Tillbaka</div>
