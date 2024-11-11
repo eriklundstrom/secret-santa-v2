@@ -7,13 +7,16 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #111;
 
-  background: radial-gradient(ellipse at 50% 30%, #444 1%, #f00 70%);
   background: radial-gradient(ellipse at 50% 30%, #BF424A 1%, #7B151C 70%);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
 }
 
 body {

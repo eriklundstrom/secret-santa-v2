@@ -5,7 +5,11 @@ import { deg2rad } from '@utils/deg2rad.ts'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Group, MathUtils } from 'three'
 
-function Scene3d() {
+type Props = {
+  hasSelectedName: boolean
+}
+
+function Scene3d({ hasSelectedName }: Props) {
   const balls = useRef<Group>(null!)
   const present = useRef<Group>(null!)
   const mouseMovementTarget = useRef<Group>(null!)
@@ -35,6 +39,7 @@ function Scene3d() {
   }, [])
 
   useFrame(() => {
+    if (!hasSelectedName) return
     present.current.rotation.y = MathUtils.lerp(
       present.current.rotation.y,
       deg2rad(mouseOffset.x * 0.25),
@@ -49,18 +54,21 @@ function Scene3d() {
   })
 
   useEffect(() => {
-    window.addEventListener('mousemove', handleMove)
-    window.addEventListener('deviceorientation', handleOrientation, true)
+    if (hasSelectedName) {
+      window.addEventListener('mousemove', handleMove)
+      window.addEventListener('deviceorientation', handleOrientation, true)
+    }
+
     return () => {
       window.removeEventListener('mousemove', handleMove)
       window.removeEventListener('deviceorientation', handleOrientation)
     }
-  }, [handleMove])
+  }, [hasSelectedName, handleMove, handleOrientation])
 
   return (
     <group ref={mouseMovementTarget}>
       <Model3dBalls ref={balls} />
-      <Model3dPresent ref={present} />
+      <Model3dPresent ref={present} show={hasSelectedName} />
     </group>
   )
 }

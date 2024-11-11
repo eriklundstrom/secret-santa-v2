@@ -9,7 +9,14 @@ import { forwardRef, useEffect, useRef, useState } from 'react'
 import { Group, MathUtils, MeshPhysicalMaterial } from 'three'
 import modalUrl from './paket.glb'
 
-const Model3dPresent = forwardRef<Group>(function Model3dPresent(_, ref) {
+type Props = {
+  show: boolean
+}
+
+const Model3dPresent = forwardRef<Group, Props>(function Model3dPresent(
+  { show },
+  ref,
+) {
   const wrapper = useRef<Group>(null!)
   const modelWrapper = useRef<Group>(null!)
   const inner = useRef<Group>(null!)
@@ -41,6 +48,7 @@ const Model3dPresent = forwardRef<Group>(function Model3dPresent(_, ref) {
   // Animate in
   useGSAP(
     () => {
+      if (!show) return
       mixer.stopAllAction()
 
       const translate = {
@@ -102,14 +110,16 @@ const Model3dPresent = forwardRef<Group>(function Model3dPresent(_, ref) {
         },
       })
     },
-    { scope: wrapper },
+    { scope: wrapper, dependencies: [show] },
   )
 
   const { contextSafe } = useGSAP({ scope: wrapper })
 
   const onClick = contextSafe(() => {
     if (animationStarted) return
+    setScale(1)
     setAnimationStarted(() => true)
+    document.body.classList.remove('hovered')
 
     // Get random name
     setSelectedName(Names[(Names.length * Math.random()) | 0] as NamesLiteral)
@@ -162,15 +172,17 @@ const Model3dPresent = forwardRef<Group>(function Model3dPresent(_, ref) {
   })
 
   return (
-    <group ref={ref}>
+    <group ref={ref} visible={show}>
       <group ref={wrapper} onClick={onClick}>
         <group
           ref={inner}
           onPointerEnter={() => {
+            if (animationStarted) return
             setScale(1.1)
             document.body.classList.add('hovered')
           }}
           onPointerLeave={() => {
+            if (animationStarted) return
             setScale(1)
             document.body.classList.remove('hovered')
           }}

@@ -1,10 +1,17 @@
 import Effects from '@components/3d/effects/Effects.tsx'
 import Scene3d from '@components/3d/scene/Scene3d.tsx'
-import { Environment, OrbitControls } from '@react-three/drei'
+import UI from '@components/ui/UI.tsx'
+import { Environment } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
+import { useState } from 'react'
 import styles from './App.module.css'
 
 function App() {
+  const [hasSelectedName, setHasSelectedName] = useState(false)
+  const onNameSelect = () => {
+    setHasSelectedName(true)
+  }
+
   return (
     <>
       <Canvas
@@ -19,8 +26,7 @@ function App() {
           far: 20,
         }}
       >
-        <OrbitControls />
-        <Scene3d />
+        <Scene3d hasSelectedName={hasSelectedName} />
         <Effects />
         <Environment
           preset="studio"
@@ -28,6 +34,7 @@ function App() {
           environmentIntensity={0.3}
         />
       </Canvas>
+      <UI onNameSelect={onNameSelect} />
     </>
   )
 }
