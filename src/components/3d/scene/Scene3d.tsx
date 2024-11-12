@@ -28,17 +28,6 @@ function Scene3d({ randomName }: Props) {
     setMouseOffset(() => ({ x: pX, y: pY }))
   }, [])
 
-  const handleOrientation = useCallback((e: DeviceOrientationEvent) => {
-    const absolute = e.absolute
-    const alpha = e.alpha || 0
-    const beta = e.beta || 0
-    const gamma = e.gamma || 0
-
-    setMouseOffset(() => ({ x: alpha * 10, y: beta * 10 }))
-
-    console.log(absolute, alpha, beta, gamma)
-  }, [])
-
   useFrame(() => {
     if (!randomName) return
     present.current.rotation.y = MathUtils.lerp(
@@ -57,14 +46,12 @@ function Scene3d({ randomName }: Props) {
   useEffect(() => {
     if (randomName) {
       // window.addEventListener('mousemove', handleMove)
-      window.addEventListener('deviceorientation', handleOrientation, true)
     }
 
     return () => {
       // window.removeEventListener('mousemove', handleMove)
-      window.removeEventListener('deviceorientation', handleOrientation)
     }
-  }, [randomName, handleMove, handleOrientation])
+  }, [randomName, handleMove])
 
   return (
     <group ref={mouseMovementTarget}>
