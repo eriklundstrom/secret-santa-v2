@@ -3,7 +3,7 @@ import { getRandomPerson } from '@utils/firebase.ts'
 import { Names, NamesLiteral } from '@utils/names.ts'
 import clsx from 'clsx'
 import gsap from 'gsap'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styles from './UI.module.css'
 
 type Props = {
@@ -20,6 +20,13 @@ function UI({ onNameSelect }: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const [hasSelected, setHasSelected] = useState(false)
   const [selectedName, setSelectedName] = useState<string>('')
+  const [isDebug, setIsDebug] = useState(false)
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const debug = urlParams.get('debug')
+    setIsDebug(debug === 'true')
+  }, [])
 
   const animateContent = contextSafe((callback: () => void) => {
     gsap.to(content.current, {
@@ -86,7 +93,7 @@ function UI({ onNameSelect }: Props) {
   const onNameConfirm = contextSafe(async (name: string) => {
     if (isLoading) return
     setIsLoading(true)
-    const randomPerson = await getRandomPerson(name)
+    const randomPerson = await getRandomPerson(name, isDebug)
     const randomName =
       randomPerson !== 'error' ? (randomPerson as NamesLiteral) : undefined
 

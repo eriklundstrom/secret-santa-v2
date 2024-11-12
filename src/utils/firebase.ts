@@ -1,3 +1,4 @@
+import { Names } from '@utils/names.ts'
 import { initializeApp } from 'firebase/app'
 import { getDatabase, ref, runTransaction } from 'firebase/database'
 
@@ -10,8 +11,6 @@ const firebaseConfig = {
   messagingSenderId: '518373367471',
   appId: '1:518373367471:web:e374201d5d76071639fe5a',
 }
-
-// { "index": 0, "name": "Lena", "selected": false, "santa": "", "prevSanta": "Lasse" },
 
 type Person = {
   index: number
@@ -42,8 +41,12 @@ function filterAvailablePeople(people: Person[], myName: string) {
   )
 }
 
-export async function getRandomPerson(myName: string) {
+export async function getRandomPerson(myName: string, debug: boolean = false) {
   initializeApp(firebaseConfig)
+
+  if (debug) {
+    return Names[Math.floor(Math.random() * Names.length)]
+  }
 
   const db = getDatabase()
   const posts = ref(db, '/people')
