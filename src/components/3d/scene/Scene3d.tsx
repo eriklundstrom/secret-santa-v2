@@ -34,7 +34,7 @@ function Scene3d({ randomName }: Props) {
     const beta = e.beta || 0
     const gamma = e.gamma || 0
 
-    setMouseOffset(() => ({ x: alpha * 1000, y: beta * 1000 }))
+    setMouseOffset(() => ({ x: alpha, y: beta }))
 
     console.log(absolute, alpha, beta, gamma)
   }, [])
